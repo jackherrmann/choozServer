@@ -13,7 +13,8 @@ const io = socketio(server);
 
 app.get('/', (req, res) => {
     res.send(`Welcome to the server on port: ${port}`); 
-})
+}); 
+console.log(`Server listening on port: ${port}`); 
 
 io.on('connection', socket => {
     console.log('User connected!', socket.id);
