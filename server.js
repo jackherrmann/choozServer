@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
     res.send(`Welcome to the server on port ${port}`); 
 })
 
-const {yelpSearch} = require('../yelp-api/yelpSearch');
+const {yelpSearch} = require('./yelp-api/yelpSearch');
 
 io.on('connection', socket => {
     console.log('User connected!', socket.id);
