@@ -2,7 +2,7 @@
 const api = require('./api');
 
 async function yelpSearch(term, latitude, longitude, params) {
-    var businesses = [];
+
 
     var searchParams = {
         'term' : term, 
@@ -11,7 +11,7 @@ async function yelpSearch(term, latitude, longitude, params) {
     };
 
     if (!(params.price == 'Any')) {
-        searchParams['price'] = params.price;
+        searchParams['price'] = params.price.length;
     }
 
     if (!(params.cuisine == 'Any')) {
@@ -22,8 +22,6 @@ async function yelpSearch(term, latitude, longitude, params) {
     try {
         const rawData = await api.get('/businesses/search', searchParams);
         const resp = await rawData.json();
-        // console.log(resp.businesses[0])
-        console.log("FIRST")
         return resp.businesses;
         
     } catch(e) {

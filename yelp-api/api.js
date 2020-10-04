@@ -2,12 +2,9 @@ const {API_BASE_URL, BEARER_TOKEN} = require('./config');
 const queryString = require('query-string');
 const fetch = require("node-fetch");
 
-function get(path, queryParams) {
-    console.log("IN GET");
-    console.log(queryParams);
+async function get(path, queryParams) {
     const query = queryString.stringify(queryParams);
-
-    return fetch(`${API_BASE_URL}${path}?${query}`, {
+    return await fetch(`${API_BASE_URL}${path}?${query}`, {
         headers : {
             Authorization : `Bearer ${BEARER_TOKEN}`,
             Origin : 'localhost',
