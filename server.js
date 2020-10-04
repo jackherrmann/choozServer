@@ -6,10 +6,14 @@ const { Session } = require('./session');
 
 const app = express();
 
-const port = 4000;
+const port = process.env.port || 4000;
 const server = http.createServer(app);
 
 const io = socketio(server);
+
+app.get('/', (req, res) => {
+    res.send(`Welcome to the server on port ${port}`); 
+})
 
 const {yelpSearch} = require('../yelp-api/yelpSearch');
 
