@@ -1,4 +1,3 @@
-const {yelpSearch} = require('./yelp-api/yelpSearch');
 
 class Session {
 

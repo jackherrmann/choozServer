@@ -11,10 +11,6 @@ const server = http.createServer(app);
 
 const io = socketio(server);
 
-app.get('/', (req, res) => {
-    res.send(`Welcome to the server on port ${port}`); 
-})
-
 const {yelpSearch} = require('./yelp-api/yelpSearch');
 
 io.on('connection', socket => {
@@ -106,6 +102,14 @@ io.on('connection', socket => {
         }
     });
 
+    socket.on('prepare_disconnect', (room) => {
+        onDisconnect(room, socket);
+    })
+
+    //socket.on('disconnect', (room) => {
+        //onDisconnect(room, socket);
+        //console.log("disconnected")
+    //});
     //socket.on('user_finish', finishUser);
 });
 
@@ -158,6 +162,11 @@ function isFinished(room) {
 function getMatches(room) {
     currSesh = sessions[room];
     return currSesh.getMatches();
+}
+
+function onDisconnect(room, socket) {
+    delete sessions[room];
+    socket.leave(room);
 }
 
 server.listen(port, function() {
