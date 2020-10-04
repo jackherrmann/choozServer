@@ -1,7 +1,10 @@
-import {API_BASE_URL, BEARER_TOKEN} from './config';
-import queryString from 'query-string';
+const {API_BASE_URL, BEARER_TOKEN} = require('./config');
+const queryString = require('query-string');
+const fetch = require("node-fetch");
 
-export function get(path, queryParams) {
+function get(path, queryParams) {
+    console.log("IN GET");
+    console.log(queryParams);
     const query = queryString.stringify(queryParams);
 
     return fetch(`${API_BASE_URL}${path}?${query}`, {
@@ -12,3 +15,5 @@ export function get(path, queryParams) {
         }
     });
 }
+
+module.exports = { get };

@@ -1,113 +1,107 @@
-// import {yelpSearch} from '../yelp-api/yelpSearch';
+const {yelpSearch} = require('../yelp-api/yelpSearch');
 
 class Session {
 
-    constructor(category, numActivities, location) {
+    constructor(category, numActivities, location, params) {
         this.host = "";
-        this.choosers = {};
+        this.choosers = [];
         this.category = category;
         this.swipes = {};
         this.numActivities = numActivities;
         this.results = {}; // maps activites to num of matches, take that number compare to total num of users
         this.activities = [];
-        this.location = location
-        this.generateActivities(this.category);
+        this.location = location;
+        this.params = params;
     }
 
-    getCategory() {
-        return this.category;
+    getMembers() {
+        return this.choosers;
     }
 
-    getNumActivites() {
-        return this.numActivities;
+    getActivities() {
+        return this.activities;
     }
 
-    getNumMembers() {
-        return Object.keys(this.choosers).length;
-    }
+    async generateActivities() {
+        console.log(this.category)
+        if (this.category == "movies") {
 
-    generateActivities(category) {
-        if (category == "movies") {
+        } else if (this.category == "Restaurants") {
+            yelpSearch(this.category, this.location.latitude, this.location.longitude, this.params)
+            .then((businesses) => {
+                console.log(businesses[0]);
+                var c = 0;
+                
+                for (var b of businesses) { 
+                    if (c == this.numActivities) {
+                        break;
+                    }
+                    
+                    const activity = {
+                        name : b.name,
+                        cuisine : b.categories[0].title,
+                        url : b.url,
+                        image_url : b.image_url,
+                        rating : b.rating,
+                        price : b.price,
+                        location : b.location.display_address[0] + ", " + b.location.display_address[1],
+                    }
 
-        } else if (category == "working...") {
-            const [businesses, amountResults, searchParams, setSearchParams] 
-                = yelpSearch(category, location.latitude, location.longitude);
+                    this.activities.push(activity);
+                    c++;
+                }
+                
+            })
 
-            var c = 0;
             
-            for (b in businesses) { 
-                if (c == this.numActivities) {
-                    break;
-                }
-
-                const activity = {
-                    name : b.name,
-                    cuisine : b.categories[0].title,
-                    url : b.url,
-                    image_url : b.image_url,
-                    rating : b.rating,
-                    price : b.price,
-                    location : b.location.display_address,
-                }
-
-                this.activities.push(activity);
-                c++;
-            }
-
-            for (name in this.choosers) {
-                var dummy = [];
-                for (var i = 0; i < c + 1; i++) {
-                    dummy.push(-1);
-                }
-    
-                this.swipes[name] = dummy;
-            }
             
             // name, price, cuisine, type = food, rating, 
-        } else if (category == "events") {
+        } else if (this.category == "events") {
 
         }
-
-        //implement apis
-        return -1; 
+    
+            //implement apis
+        
     }
 
     addMember(name) {
-        this.choosers[name] = 0;
+        this.choosers.push(name);
     }
 
     setHost(name) {
         this.hose = name;
     }
 
-    performSwipe(name, direction) {
-        var idx = this.choosers[name]
+    // performSwipe(name, direction) {
+    //     var idx = this.choosers[name]
 
-        if (direction == "left") {
-            this.swipes[name][idx] = 0;
-        } else {
-            this.swipes[name][idx] = 1;
-        }
+    //     if (direction == "left") {
+    //         this.swipes[name][idx] = 0;
+    //     } else {
+    //         this.swipes[name][idx] = 1;
+    //     }
 
-        this.choosers[name]++;
+    //     this.choosers[name]++;
+    // }
+
+    processSwipes(name, userSwipes) {
+        this.swipes[name] = userSwipes;
     }
 
     isFinished() {
-        for (i in choosers) {
-            if (choosers[i] !== self.nums) {
-                return false;
-            }
+        if (Object.keys(this.swipes).size() == this.choosers.length) {
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     getMatches() {
         indexes = {};
         currIndex = 0;
 
-        for (i in swipes) {
-            for (j of swipes[i]) {
+        for (var i of swipes) {
+            for (var j of swipes[i]) {
                 indexes[currIndex] += j;
                 currIndex++;
             }
@@ -116,8 +110,8 @@ class Session {
 
         matches = [];
 
-        for (i in indexes) {
-            if (index[i] == this.choosers.length()) {
+        for (var i of indexes) {
+            if (index[i] == this.choosers.length) {
                 matches.push(activities[i]);
             }
         }
