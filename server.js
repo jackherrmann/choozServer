@@ -13,6 +13,10 @@ const io = socketio(server);
 
 const {yelpSearch} = require('./yelp-api/yelpSearch');
 
+app.get('/', (req, res) => {
+    res.send(`Welcome to the server on port ${port}`); 
+})
+
 io.on('connection', socket => {
     console.log('User connected!', socket.id);
 
